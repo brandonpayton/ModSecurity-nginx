@@ -796,7 +796,7 @@ ngx_http_modsecurity_set_up_log_reload(ngx_conf_t *cf, ngx_http_modsecurity_conf
 {
     ngx_http_modsecurity_main_conf_t  *mmcf;
     ngx_list_t                        *list;
-    Rules                         **item;
+    Rules                            **item;
     
     mmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_modsecurity_module);
     list = mmcf->audit_log_reload->data;
@@ -819,7 +819,7 @@ ngx_http_modsecurity_log_reload(ngx_open_file_t *file, ngx_log_t *log)
     ngx_list_t       *list;
     ngx_list_part_t  *part;
     ngx_uint_t        i;
-    Rules        **rules_sets;
+    Rules           **rules_sets;
     const char       *error = NULL;
 
     ngx_log_debug0(NGX_LOG_DEBUG_EVENT, log, 0, "modsecurity audit log buffer flush");
