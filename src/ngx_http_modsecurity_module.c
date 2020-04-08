@@ -625,16 +625,16 @@ ngx_http_modsecurity_create_main_conf(ngx_conf_t *cf)
     msc_set_connector_info(conf->modsec, MODSECURITY_NGINX_WHOAMI);
     msc_set_log_cb(conf->modsec, ngx_http_modsecurity_log);
 
-    /* Set up audit log reload */
+    /* Set up audit log reopening */
     ngx_str_t log_reopen_file = ngx_string("/dev/null");
     conf->audit_log_reopen = ngx_conf_open_file(cf->cycle, &log_reopen_file);
     if (conf->audit_log_reopen == NULL) {
-        dd("failed to open file for triggering log reload");
+        dd("failed to open file for triggering audit log reopen");
         return NGX_CONF_ERROR;
     }
     conf->audit_log_reopen->data = ngx_list_create(cf->pool, 100, sizeof(Rules*));
     if (conf->audit_log_reopen->data == NULL) {
-        dd("failed to create list of rule sets for log reload");
+        dd("failed to create list of rules sets for audit log reopen");
         return NGX_CONF_ERROR;
     }
     conf->audit_log_reopen->flush = ngx_http_modsecurity_log_reopen;
@@ -749,7 +749,7 @@ ngx_http_modsecurity_merge_conf(ngx_conf_t *cf, void *parent, void *child)
         return strdup(error);
     }
     if (ngx_http_modsecurity_set_up_log_reopen(cf, c) < 0) {
-        return strdup("failed to set up log reloading");
+        return strdup("failed to set up audit log reopen");
     }
 
 #if defined(MODSECURITY_DDEBUG) && (MODSECURITY_DDEBUG)
@@ -805,7 +805,7 @@ ngx_http_modsecurity_set_up_log_reopen(ngx_conf_t *cf, ngx_http_modsecurity_conf
     // so we can ask for its audit log to be reopened.
     item = ngx_list_push(list);
     if (item == NULL) {
-        dd("failed to append a rules set for log reload");
+        dd("failed to set up a rules set for audit log reopen");
         return -1;
     }
     *item = mcf->rules_set;
